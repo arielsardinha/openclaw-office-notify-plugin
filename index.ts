@@ -8,6 +8,7 @@
  * Privacidade: por padrão o painel recebe apenas agente + estado. O texto das
  * mensagens e das tarefas só é enviado com `includeContent: true`.
  */
+import { readFileSync } from "node:fs";
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 
 const DEFAULT_ENDPOINT = "http://127.0.0.1:4200/api/workflow";
@@ -19,6 +20,7 @@ const MAX_TRACKED_CHILDREN = 500;
 type PluginConfig = {
   endpoint?: string;
   apiToken?: string;
+  apiTokenFile?: string;
   enabled?: boolean;
   timeoutMs?: number;
   orchestratorAgent?: string;
@@ -62,9 +64,19 @@ export default definePluginEntry({
       return;
     }
 
-    const apiToken = config.apiToken || process.env.OFFICE_API_TOKEN || "";
+    // Ordem: apiToken (config) > apiTokenFile (único arquivo, caminho explícito) > OFFICE_API_TOKEN
+    let apiToken = config.apiToken || "";
+    if (!apiToken && config.apiTokenFile) {
+      try {
+        apiToken = readFileSync(config.apiTokenFile, "utf8").trim();
+      } catch {
+        api.logger?.warn?.("[office-notify] não foi possível ler apiTokenFile; plugin desativado");
+        return;
+      }
+    }
+    apiToken = apiToken || process.env.OFFICE_API_TOKEN || "";
     if (!apiToken) {
-      api.logger?.warn?.("[office-notify] sem apiToken/OFFICE_API_TOKEN: o painel recusa escritas; plugin desativado");
+      api.logger?.warn?.("[office-notify] sem token (apiToken/apiTokenFile/OFFICE_API_TOKEN): o painel recusa escritas; plugin desativado");
       return;
     }
 

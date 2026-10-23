@@ -18,9 +18,10 @@ Hooks **somente de observação**: `message_received`, `message_sent`, `subagent
 | Campo | Padrão | Descrição |
 |---|---|---|
 | `endpoint` | `http://127.0.0.1:4200/api/workflow` | Somente loopback |
-| `apiToken` | — | Igual ao `OFFICE_API_TOKEN` do painel (ou use a variável de ambiente) |
+| `apiTokenFile` | — | Caminho de um arquivo (0600) com o token do painel. Recomendado: mantém o token fora do `openclaw.json` |
+| `apiToken` | — | Token em texto puro (alternativa); também aceita a variável `OFFICE_API_TOKEN` |
 | `orchestratorAgent` | `coordinator` | Deve coincidir com `orchestrator` no config do painel |
 | `includeContent` | `false` | Enviar texto de mensagens/tarefas |
 | `timeoutMs` | `2000` | |
 
-Sem `apiToken`, o plugin se desativa (o painel recusa escritas sem token).
+Sem token (`apiTokenFile`, `apiToken` ou `OFFICE_API_TOKEN`), o plugin se desativa (o painel recusa escritas sem token).

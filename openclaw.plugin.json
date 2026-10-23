@@ -7,16 +7,49 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "endpoint": { "type": "string", "description": "Endpoint do painel (somente loopback)", "default": "http://127.0.0.1:4200/api/workflow" },
-      "apiToken": { "type": "string", "description": "Bearer token do painel (ou variável OFFICE_API_TOKEN)" },
-      "enabled": { "type": "boolean", "default": true },
-      "timeoutMs": { "type": "number", "default": 2000 },
-      "orchestratorAgent": { "type": "string", "description": "Id do agente que recebe as mensagens do usuário", "default": "coordinator" },
-      "includeContent": { "type": "boolean", "description": "Enviar texto de mensagens e tarefas ao painel", "default": false }
+      "endpoint": {
+        "type": "string",
+        "description": "Endpoint do painel (somente loopback)",
+        "default": "http://127.0.0.1:4200/api/workflow"
+      },
+      "apiToken": {
+        "type": "string",
+        "description": "Bearer token do painel (prefira apiTokenFile)"
+      },
+      "apiTokenFile": {
+        "type": "string",
+        "description": "Caminho de um arquivo (0600) contendo o token do painel"
+      },
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "timeoutMs": {
+        "type": "number",
+        "default": 2000
+      },
+      "orchestratorAgent": {
+        "type": "string",
+        "description": "Id do agente que recebe as mensagens do usuário",
+        "default": "coordinator"
+      },
+      "includeContent": {
+        "type": "boolean",
+        "description": "Enviar texto de mensagens e tarefas ao painel",
+        "default": false
+      }
     }
   },
   "uiHints": {
-    "apiToken": { "label": "API Token do painel", "sensitive": true },
-    "includeContent": { "label": "Enviar conteúdo das mensagens" }
+    "apiToken": {
+      "label": "API Token do painel",
+      "sensitive": true
+    },
+    "includeContent": {
+      "label": "Enviar conteúdo das mensagens"
+    },
+    "apiTokenFile": {
+      "label": "Arquivo do token do painel"
+    }
   }
 }
