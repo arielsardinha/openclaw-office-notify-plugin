@@ -1,24 +1,10 @@
 {
   "name": "openclaw-office-notify-plugin",
-  "version": "1.0.0",
-  "description": "OpenClaw Office notification plugin \u2014 bridges agent events to the Office dashboard",
+  "version": "3.0.0",
+  "description": "Notifica o painel OpenClaw Office sobre atividade dos agentes (local, somente observação)",
   "type": "module",
   "main": "index.ts",
-  "openclaw": {
-    "extensions": [
-      "./index.ts"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wickedapp/openclaw-office-notify-plugin.git"
-  },
-  "keywords": [
-    "openclaw",
-    "plugin",
-    "kcc-office",
-    "telegram"
-  ],
-  "author": "KCC IT Solution",
+  "openclaw": { "extensions": ["./index.ts"] },
+  "repository": { "type": "git", "url": "https://github.com/arielsardinha/openclaw-office-notify-plugin.git" },
   "license": "MIT"
 }

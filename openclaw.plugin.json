@@ -1,53 +1,22 @@
 {
   "id": "openclaw-office-notify",
-  "name": "OpenClaw Office Notify Plugin",
-  "description": "Bridges OpenClaw agent events to the OpenClaw Office dashboard. Pushes messages, task lifecycle, and pipeline events via message_received/message_sent hooks.",
-  "version": "2.0.0",
+  "name": "OpenClaw Office Notify",
+  "description": "Envia estado dos agentes ao painel OpenClaw Office. Somente local e somente observação.",
+  "version": "3.0.0",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
     "properties": {
-      "endpoint": {
-        "type": "string",
-        "description": "Office workflow API endpoint",
-        "default": "http://localhost:4200/api/workflow"
-      },
-      "messagesEndpoint": {
-        "type": "string",
-        "description": "Office messages API endpoint",
-        "default": "http://localhost:4200/api/messages"
-      },
-      "apiToken": {
-        "type": "string",
-        "description": "Bearer token for Office API authentication (optional, also reads KCC_OFFICE_API_TOKEN env var)"
-      },
-      "enabled": {
-        "type": "boolean",
-        "default": true
-      },
-      "timeoutMs": {
-        "type": "number",
-        "default": 2000
-      }
+      "endpoint": { "type": "string", "description": "Endpoint do painel (somente loopback)", "default": "http://127.0.0.1:4200/api/workflow" },
+      "apiToken": { "type": "string", "description": "Bearer token do painel (ou variável OFFICE_API_TOKEN)" },
+      "enabled": { "type": "boolean", "default": true },
+      "timeoutMs": { "type": "number", "default": 2000 },
+      "orchestratorAgent": { "type": "string", "description": "Id do agente que recebe as mensagens do usuário", "default": "coordinator" },
+      "includeContent": { "type": "boolean", "description": "Enviar texto de mensagens e tarefas ao painel", "default": false }
     }
   },
   "uiHints": {
-    "endpoint": {
-      "label": "Workflow Endpoint",
-      "placeholder": "http://localhost:4200/api/workflow"
-    },
-    "messagesEndpoint": {
-      "label": "Messages Endpoint",
-      "placeholder": "http://localhost:4200/api/messages"
-    },
-    "apiToken": {
-      "label": "API Token (optional)"
-    },
-    "enabled": {
-      "label": "Enable Notifications"
-    },
-    "timeoutMs": {
-      "label": "Request Timeout (ms)"
-    }
+    "apiToken": { "label": "API Token do painel", "sensitive": true },
+    "includeContent": { "label": "Enviar conteúdo das mensagens" }
   }
 }
