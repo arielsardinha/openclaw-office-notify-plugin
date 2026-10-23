@@ -15,7 +15,6 @@ const DEFAULT_ENDPOINT = "http://127.0.0.1:4200/api/workflow";
 const DEFAULT_TIMEOUT_MS = 2000;
 const DEFAULT_ORCHESTRATOR = "coordinator";
 const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
-const MAX_TRACKED_CHILDREN = 500;
 
 type PluginConfig = {
   endpoint?: string;
@@ -85,8 +84,6 @@ export default definePluginEntry({
     const includeContent = config.includeContent === true;
     const log = (msg: string) => api.logger?.info?.(`[office-notify] ${msg}`);
 
-    // childSessionKey -> agentId, para casar subagent_ended (que só traz targetSessionKey)
-    const children = new Map<string, string>();
 
     async function post(body: Record<string, unknown>): Promise<void> {
       try {
@@ -114,21 +111,18 @@ export default definePluginEntry({
     });
 
     api.on("subagent_spawned", async (event: any) => {
-      const childSessionKey = event?.childSessionKey;
-      const agentId = agentIdFromSessionKey(childSessionKey);
+      const agentId = (typeof event?.agentId === "string" && event.agentId) || agentIdFromSessionKey(event?.childSessionKey);
       if (!agentId) return;
-
-      if (children.size >= MAX_TRACKED_CHILDREN) children.delete(children.keys().next().value as string);
-      children.set(childSessionKey, agentId);
-
       const task = includeContent ? clip(event?.task ?? event?.prompt, 200) : `Delegado a ${agentId}`;
       void post({ action: "start_flow", content: task, from: "Boss", agent: orchestrator, delegatedTo: agentId });
     });
 
-    api.on("subagent_ended", async (event: any) => {
-      const key = event?.targetSessionKey;
-      const agentId = children.get(key) || agentIdFromSessionKey(key);
-      children.delete(key);
+    // Sem estado entre hooks: o host pode registrar o plugin em mais de uma instância,
+    // então o agente é derivado da própria chave da sessão filha ("agent:<id>:subagent:...").
+    // subagent_progress/ended dispara assim que a execução termina (subagent_ended é best-effort).
+    api.on("subagent_progress", async (event: any) => {
+      if (event?.phase !== "ended") return;
+      const agentId = agentIdFromSessionKey(event?.childSessionKey);
       if (!agentId) return;
       void post({ action: "agent_complete", agent: agentId, result: event?.outcome === "ok" ? "concluído" : String(event?.outcome ?? "encerrado") });
     });

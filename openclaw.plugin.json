@@ -3,6 +3,12 @@
   "name": "OpenClaw Office Notify",
   "description": "Envia estado dos agentes ao painel OpenClaw Office. Somente local e somente observação.",
   "version": "3.0.0",
+  "activation": {
+    "onStartup": true,
+    "onCapabilities": [
+      "hook"
+    ]
+  },
   "configSchema": {
     "type": "object",
     "additionalProperties": false,

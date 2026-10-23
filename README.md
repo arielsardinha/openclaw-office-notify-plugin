@@ -3,7 +3,9 @@
 Avisa o painel [OpenClaw Office](https://github.com/arielsardinha/openclaw-office) quando agentes recebem mensagens, delegam e concluem trabalho.
 
 ## O que ele faz
-Hooks **somente de observação**: `message_received`, `message_sent`, `subagent_spawned`, `subagent_ended`. Cada evento vira um POST `start_flow`/`agent_complete` em `/api/workflow` do painel.
+Hooks **somente de observação**: `message_received`, `message_sent`, `subagent_spawned` e `subagent_progress` (fase `ended`). Cada evento vira um POST `start_flow`/`agent_complete` em `/api/workflow` do painel. O manifesto declara `activation.onStartup: true`; sem isso o gateway não importa um plugin só de hooks.
+
+O plugin não guarda estado entre hooks: o agente vem do `agentId` do evento ou da chave da sessão filha (`agent:<id>:subagent:<uuid>`).
 
 ## O que ele NÃO faz (diferenças do upstream)
 - Não lê `~/.openclaw/openclaw.json`, `.env.local` nem tokens do gateway.
